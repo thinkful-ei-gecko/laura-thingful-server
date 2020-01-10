@@ -13,10 +13,10 @@ const ThingsService = {
         'thg.image',
         ...userFields,
         db.raw(
-          `count(DISTINCT rev) AS number_of_reviews`
+          'count(DISTINCT rev) AS number_of_reviews'
         ),
         db.raw(
-          `AVG(rev.rating) AS average_review_rating`
+          'AVG(rev.rating) AS average_review_rating'
         )
       )
       .leftJoin(
@@ -29,13 +29,13 @@ const ThingsService = {
         'thg.user_id',
         'usr.id'
       )
-      .groupBy('thg.id', 'usr.id')
+      .groupBy('thg.id', 'usr.id');
   },
 
   getById(db, id) {
     return ThingsService.getAllThings(db)
       .where('thg.id', id)
-      .first()
+      .first();
   },
 
   getReviewsForThing(db, thing_id) {
@@ -64,9 +64,8 @@ const ThingsService = {
   serializeThing(thing) {
     const thingTree = new Treeize();
     console.log(thingTree);
-    // Some light hackiness to allow for the fact that `treeize`
-    // only accepts arrays of objects, and we want to use a single
-    // object.
+    // Some hackiness to allow for the fact that `treeize` only
+    // accepts arrays of objects, and we want to use a single object.
     const thingData = thingTree.grow([ thing ]).getData()[0];
     console.log(thingData);
 
@@ -101,7 +100,7 @@ const ThingsService = {
       user: reviewData.user || {},
       date_created: reviewData.date_created
     };
-  },
+  }
 };
 
 const userFields = [
@@ -110,7 +109,7 @@ const userFields = [
   'usr.full_name AS user:full_name',
   'usr.nickname AS user:nickname',
   'usr.date_created AS user:date_created',
-  'usr.date_modified AS user:date_modified',
+  'usr.date_modified AS user:date_modified'
 ];
 
 module.exports = ThingsService;
