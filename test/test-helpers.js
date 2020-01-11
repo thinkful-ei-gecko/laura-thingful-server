@@ -276,7 +276,7 @@ function seedMaliciousThing(db, user, thing) {
       subject: user.user_name,
       algorithm: 'HS256',
     });
-    return `Bearer ${token}`
+    return `bearer ${token}`
   }
 
 module.exports = {

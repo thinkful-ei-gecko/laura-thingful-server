@@ -21,8 +21,8 @@ thingsRouter.route('/:thing_id')
   });
 
 thingsRouter.route('/:thing_id/reviews/')
-.all(requireAuth)
-.all(checkThingExists)
+  .all(requireAuth)
+  .all(checkThingExists)
   .get((req, res, next) => {
     ThingsService.getReviewsForThing( req.app.get('db'), req.params.thing_id )
       .then(reviews => {

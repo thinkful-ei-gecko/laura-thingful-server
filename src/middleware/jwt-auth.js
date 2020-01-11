@@ -7,13 +7,13 @@ function requireAuth(req, res, next) {
   if (!authToken.toLowerCase().startsWith('bearer ')) {
     return res.status(401).json({ error: 'Missing bearer token' });
   } else {
-    bearerToken = authToken.slice(7, authToken.length);
+    bearerToken = authToken.slice(7);
   }
 
   try {
     const payload = AuthService.verifyJwt(bearerToken);
-
-    AuthService.getUserWithUserName( req.app.get('db'), payload.subject )
+    console.log(payload);
+    AuthService.getUserWithUserName( req.app.get('db'), payload.sub )
       .then(user => {
         if (!user)
           return res.status(401).json({ error: 'Unauthorized request' });
