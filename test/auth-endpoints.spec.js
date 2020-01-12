@@ -3,9 +3,8 @@ const jwt = require('jsonwebtoken');
 const app = require('../src/app.js');
 const helpers = require('./test-helpers.js');
 
-describe.skip('Auth Endpoints', function() {
+describe('Auth Endpoints', function() {
   let db;
-
   const { testUsers } = helpers.makeThingsFixtures();
   const testUser = testUsers[0];
 
@@ -53,7 +52,8 @@ describe.skip('Auth Endpoints', function() {
       const expectedToken = jwt.sign(
         { user_id: testUser.id }, // payload
         process.env.JWT_SECRET,
-        { subject: testUser.user_name, 
+        { subject: testUser.user_name,
+          expiresIn: process.env.JWT_EXPIRY,
           algorithm: 'HS256'
         });
       return supertest(app)
@@ -63,4 +63,29 @@ describe.skip('Auth Endpoints', function() {
     });
 
   });
+
+
+  describe('POST /api/auth/refresh', () => {
+    beforeEach('insert users', () =>
+      helpers.seedUsers( db, testUsers )
+    );
+
+    it('responds 200 and JWT auth token using secret', () => {
+      const expectedToken = jwt.sign(
+        { user_id: testUser.id },
+        process.env.JWT_SECRET,
+        { subject: testUser.user_name,
+          expiresIn: process.env.JWT_EXPIRY,
+          algorithm: 'HS256',
+        }
+      );
+      return supertest(app)
+        .post('/api/auth/refresh')
+        .set('Authorization', helpers.makeAuthHeader(testUser))
+        .expect(200, {
+          authToken: expectedToken,
+        });
+    });
+  });
+
 });
